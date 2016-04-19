@@ -29,6 +29,8 @@ public class CurrencyConverterTest {
         // Using a delta of 0.006 to pad for ceil and floor errors
         assertEquals(0.25, mCurrencyConverter.convertCurrency("CAD", "GBP", 1.0), 0.006); // Should be 0.5 * 0.5 = 0.25
         assertEquals(0.12, mCurrencyConverter.convertCurrency("AUD", "GBP", 1.0), 0.006); // Should be 0.125 ~ 0.12
+
+        assertEquals(true, mCurrencyConverter.containsCurrency("CAD"));
     }
 
 }
