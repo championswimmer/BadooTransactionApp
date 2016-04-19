@@ -2,7 +2,6 @@ package in.arnavgupta.badootransactionapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,8 @@ import java.util.List;
 
 import in.arnavgupta.badootransactionapp.models.SkuTransactions;
 import in.arnavgupta.badootransactionapp.models.Transaction;
+import in.arnavgupta.badootransactionapp.utils.CurrencyConverter;
+import in.arnavgupta.badootransactionapp.utils.DataUtils;
 
 public class TransactionListActivity extends AppCompatActivity {
 
@@ -21,18 +22,37 @@ public class TransactionListActivity extends AppCompatActivity {
 
     String skuName;
     ListView transListView;
+    double totalGBP = 0;
+
+    TextView textGbpTotal;
+
+    CurrencyConverter currencyConverter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_list);
 
+        currencyConverter = DataUtils.getCurrencyConverter(this);
+
+
         transListView = (ListView) findViewById(R.id.transactions_list);
 
         skuName = getIntent().getStringExtra("SKU");
+
         SkuTransactions skuTrans = ProductListActivity.transactionsMap.get(skuName);
         List<Transaction> transList = skuTrans.transactions;
         TransactionListAdapter trListAdapter = new TransactionListAdapter(transList);
+
+        for (Transaction trans : transList) {
+            totalGBP += trans.calcGBP(currencyConverter);
+        }
+
+        textGbpTotal = (TextView) findViewById(R.id.text_total_gbp);
+
+        if (textGbpTotal != null) {
+            textGbpTotal.setText(String.format(getString(R.string.total_gbp), totalGBP));
+        }
 
         transListView.setAdapter(trListAdapter);
 
@@ -66,9 +86,6 @@ public class TransactionListActivity extends AppCompatActivity {
         }
 
 
-
-
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             final View result;
@@ -85,8 +102,9 @@ public class TransactionListActivity extends AppCompatActivity {
             //Log.d(TAG, "getView: " + trans.amount);
 
             //FIXME: The values could be null
-            String actualAmt = trans.currency + " " +  trans.amount;
-            String poundAmt = "GBP" + " " +  trans.amount; //TODO: Use currency symbols?
+            String actualAmt = trans.currency + " " + trans.amount;
+
+            String poundAmt = "GBP" + " " + trans.calcGBP(currencyConverter); //TODO: Use currency symbols?
             ((TextView) result.findViewById(android.R.id.text1)).setText(actualAmt);
             ((TextView) result.findViewById(android.R.id.text2)).setText(poundAmt);
 

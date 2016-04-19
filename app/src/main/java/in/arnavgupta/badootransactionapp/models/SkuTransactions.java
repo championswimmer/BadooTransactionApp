@@ -8,4 +8,5 @@ import java.util.List;
 public class SkuTransactions {
     public String SKU;
     public List<Transaction> transactions;
+    public double totalInGBP;
 }

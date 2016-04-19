@@ -12,5 +12,5 @@ public class GBPRate {
      */
 
     String currency; //The foreign currency, for eg, USD
-    float rate; // Here rate stands for: 1 GBP = rate * USD, or 1 USD = 1 GBP / rate
+    double rate; // Here rate stands for: 1 GBP = rate * USD, or 1 USD = 1 GBP / rate
 }

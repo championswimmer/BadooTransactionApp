@@ -50,7 +50,7 @@ public class DataUtils {
         for (int i = 0; i < transArray.length(); i++) {
             JSONObject transObj = transArray.getJSONObject(i);
             tmpTrans = new Transaction();
-            tmpTrans.amount = (float) transObj.getDouble("amount");
+            tmpTrans.amount = (double) transObj.getDouble("amount");
             tmpTrans.currency = transObj.getString("currency");
             tmpTrans.SKU = transObj.getString("sku");
 
@@ -71,19 +71,35 @@ public class DataUtils {
         return transactionMap;
     }
 
-    public static CurrencyConverter getCurrencyConverter (Context c) throws JSONException {
+    public static CurrencyConverter getCurrencyConverter (Context c) {
 
         if (currencyConverter == null) {
             currencyConverter = new CurrencyConverter();
 
             String rateJsonString = loadJSONFromAsset(c, "rates.json");
-            JSONArray rateArr = new JSONArray(rateJsonString);
+            JSONArray rateArr = null;
+            try {
+                rateArr = new JSONArray(rateJsonString);
+            } catch (JSONException e) {
+                Log.e(TAG, "getCurrencyConverter: rates.json is malformed", e);
+                return null;
+            }
 
             for (int i = 0; i < rateArr.length(); i++) {
-                JSONObject rateObj = rateArr.getJSONObject(i);
-                String from = rateObj.getString("from");
-                String to = rateObj.getString("from");
-                float rate = (float) rateObj.getDouble("rate");
+                JSONObject rateObj = null;
+                String from, to;
+                double rate;
+                try {
+                    rateObj = rateArr.getJSONObject(i);
+                    from = rateObj.getString("from");
+                    to = rateObj.getString("to");
+                    rate = (double) rateObj.getDouble("rate");
+                } catch (JSONException e) {
+                    Log.e(TAG, "getCurrencyConverter: This rate is malformed", e);
+                    e.printStackTrace();
+                    break;
+                }
+
 
                 currencyConverter.setExchangeRate(
                         from,
@@ -95,9 +111,7 @@ public class DataUtils {
                         from,
                         (1/rate)
                 );
-
             }
-
         }
 
         return currencyConverter;

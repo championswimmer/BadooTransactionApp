@@ -10,6 +10,7 @@
     android:orientation="vertical"
     tools:context="in.arnavgupta.badootransactionapp.ProductListActivity">
     <TextView
+        android:id="@+id/text_total_gbp"
         android:background="@color/colorPrimaryDark"
         android:textColor="@android:color/white"
         android:padding="10dp"
