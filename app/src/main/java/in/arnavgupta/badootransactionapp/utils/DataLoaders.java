@@ -12,6 +12,7 @@ import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import in.arnavgupta.badootransactionapp.models.Rate;
 import in.arnavgupta.badootransactionapp.models.SkuTransactions;
@@ -42,7 +43,7 @@ public class DataLoaders {
     }
 
     public static void loadTransactions (Context c, OnTransactionsLoadedListener onTrLoadListener) {
-        Map<String, SkuTransactions> transactionMap = new HashMap<>();
+        Map<String, SkuTransactions> transactionMap = new TreeMap<>();
         String transactionJson = DataUtils.loadJSONFromAsset(c, "transactions.json");
 
         try {
