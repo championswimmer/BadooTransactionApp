@@ -23,7 +23,7 @@ public class Transaction {
      * @param c
      * @return
      */
-    public double calcGBP (Context c) {
+    public double calcGBP (CurrencyConverter currConv) {
 
         if (currency.equals("GBP")) {
             amountGBP = amount;
@@ -32,7 +32,7 @@ public class Transaction {
 
         if (amountGBP == -1) {
             try {
-                amountGBP = DataUtils.convertToGBP(currency, amount, c);
+                amountGBP = DataUtils.convertToGBP(currency, amount, currConv);
             } catch (ArithmeticException e) {
                 amountGBP = 0;
             }

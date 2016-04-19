@@ -9,8 +9,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import in.arnavgupta.badootransactionapp.models.Rate;
 import in.arnavgupta.badootransactionapp.models.SkuTransactions;
 import in.arnavgupta.badootransactionapp.models.Transaction;
 
@@ -23,6 +25,10 @@ public class DataLoaders {
 
     public interface OnTransactionsLoadedListener {
         public void onTransactionsLoaded (Map<String, SkuTransactions> skuTransactionsMap);
+    }
+
+    public interface OnRatesLoadedListener {
+        public void onRatesLoaded(List<Rate> rateList);
     }
 
     public static void loadTransactions (Context c, OnTransactionsLoadedListener onTrLoadListener) {
@@ -54,9 +60,34 @@ public class DataLoaders {
                 }
 
             }
+            onTrLoadListener.onTransactionsLoaded(transactionMap);
         } catch (JSONException je) {
             Log.e(TAG, "loadTransactions: Could not load JSON", je);
         }
-        onTrLoadListener.onTransactionsLoaded(transactionMap);
+    }
+
+    public static void loadCurrencies(Context c, OnRatesLoadedListener onRatesLoadedListener) {
+        List<Rate> rates = new ArrayList<>();
+        String rateJsonString = DataUtils.loadJSONFromAsset(c, "rates.json");
+        JSONArray rateArr = null;
+        try {
+            rateArr = new JSONArray(rateJsonString);
+            Rate tmpRate;
+
+            for (int i = 0; i < rateArr.length(); i++) {
+                JSONObject rateObj = null;
+                tmpRate = new Rate();
+                rateObj = rateArr.getJSONObject(i);
+                tmpRate.from = rateObj.getString("from");
+                tmpRate.to = rateObj.getString("to");
+                tmpRate.rate = (double) rateObj.getDouble("rate");
+
+                rates.add(tmpRate);
+
+            }
+            onRatesLoadedListener.onRatesLoaded(rates);
+        } catch (JSONException je) {
+            Log.e(TAG, "loadCurrencies: Could not load rates JSON", je);
+        }
     }
 }

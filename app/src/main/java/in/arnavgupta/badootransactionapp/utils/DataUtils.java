@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import in.arnavgupta.badootransactionapp.models.Rate;
 import in.arnavgupta.badootransactionapp.models.SkuTransactions;
 import in.arnavgupta.badootransactionapp.models.Transaction;
 
@@ -76,13 +78,13 @@ public class DataUtils {
      * @param c
      * @return
      */
-    public static double convertToGBP(String currency, double amount, Context c) {
+    public static double convertToGBP(String currency, double amount,CurrencyConverter currConv) {
         double reqRate;
         if (curRateMap.containsKey(currency)) {
             reqRate = curRateMap.get(currency);
         } else {
             Log.d(TAG, "convertToGBP: Start Vertex = " + currency);
-            reqRate = getCurrencyConverter(c).convertCurrency(currency, "GBP", 1);
+            reqRate = currConv.convertCurrency(currency, "GBP", 1);
             curRateMap.put(currency, reqRate);
         }
         return reqRate * amount;
@@ -95,48 +97,25 @@ public class DataUtils {
      * @param c Context
      * @return Singleton instance of CurrencyConverter
      */
-    public static CurrencyConverter getCurrencyConverter (Context c) {
+    public static CurrencyConverter getCurrencyConverter (Context c, List<Rate> currencyRates) {
 
         if (currencyConverter == null) {
             currencyConverter = new CurrencyConverter();
 
-            String rateJsonString = loadJSONFromAsset(c, "rates.json");
-            JSONArray rateArr = null;
-            try {
-                rateArr = new JSONArray(rateJsonString);
-            } catch (JSONException e) {
-                Log.e(TAG, "getCurrencyConverter: rates.json is malformed", e);
-                return null;
-            }
 
-            for (int i = 0; i < rateArr.length(); i++) {
-                JSONObject rateObj = null;
-                String from, to;
-                double rate;
-                try {
-                    rateObj = rateArr.getJSONObject(i);
-                    from = rateObj.getString("from");
-                    to = rateObj.getString("to");
-                    rate = (double) rateObj.getDouble("rate");
-                } catch (JSONException e) {
-                    Log.e(TAG, "getCurrencyConverter: This rate is malformed", e);
-                    e.printStackTrace();
-                    break;
+            for (Rate rate : currencyRates){
+                if (rate.to.equals("GBP")) {
+                    curRateMap.put(rate.from, rate.rate);
                 }
-
-                if (to.equals("GBP")) {
-                    curRateMap.put(from, rate);
-                }
-                if (from.equals("GBP")) {
-                    curRateMap.put(to, (1/rate));
+                if (rate.from.equals("GBP")) {
+                    curRateMap.put(rate.to, (1/rate.rate));
                 }
 
                 boolean success = currencyConverter.setExchangeRate(
-                        from,
-                        to,
-                        rate
+                        rate.from,
+                        rate.to,
+                        rate.rate
                 );
-                Log.d(TAG, "getCurrencyConverter: Added rate from " + from + " to " + to + " and reverse = " + success);
             }
         }
 

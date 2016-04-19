@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import in.arnavgupta.badootransactionapp.models.Rate;
 import in.arnavgupta.badootransactionapp.models.SkuTransactions;
 import in.arnavgupta.badootransactionapp.models.Transaction;
 import in.arnavgupta.badootransactionapp.utils.CurrencyConverter;
+import in.arnavgupta.badootransactionapp.utils.DataLoaders;
 import in.arnavgupta.badootransactionapp.utils.DataUtils;
 
 public class TransactionListActivity extends AppCompatActivity {
@@ -33,28 +35,32 @@ public class TransactionListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_list);
 
-        currencyConverter = DataUtils.getCurrencyConverter(this);
-
-
         transListView = (ListView) findViewById(R.id.transactions_list);
-
         skuName = getIntent().getStringExtra(ProductListActivity.EXTRA_SKU_TRANSACTIONS);
 
         SkuTransactions skuTrans = ProductListActivity.transactionsMap.get(skuName);
-        List<Transaction> transList = skuTrans.transactions;
-        TransactionListAdapter trListAdapter = new TransactionListAdapter(transList);
+        final List<Transaction> transList = skuTrans.transactions;
+        final TransactionListAdapter trListAdapter = new TransactionListAdapter(transList);
 
-        for (Transaction trans : transList) {
-            totalGBP += trans.calcGBP(this);
-        }
 
-        textGbpTotal = (TextView) findViewById(R.id.text_total_gbp);
+        DataLoaders.loadCurrencies(this, new DataLoaders.OnRatesLoadedListener() {
+            @Override
+            public void onRatesLoaded(List<Rate> rateList) {
+                currencyConverter = DataUtils.getCurrencyConverter(getApplicationContext(), rateList);
 
-        if (textGbpTotal != null) {
-            textGbpTotal.setText(String.format(getString(R.string.total_gbp), totalGBP));
-        }
+                for (Transaction trans : transList) {
+                    totalGBP += trans.calcGBP(currencyConverter);
+                }
+                textGbpTotal = (TextView) findViewById(R.id.text_total_gbp);
 
-        transListView.setAdapter(trListAdapter);
+                if (textGbpTotal != null) {
+                    textGbpTotal.setText(String.format(getString(R.string.total_gbp), totalGBP));
+                }
+
+                transListView.setAdapter(trListAdapter);
+            }
+        });
+
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -103,7 +109,7 @@ public class TransactionListActivity extends AppCompatActivity {
             //FIXME: The values could be null
             String actualAmt = trans.currency + " " + trans.amount;
 
-            String poundAmt = String.format(getString(R.string.gbp_trans_amount), trans.calcGBP(getBaseContext()));
+            String poundAmt = String.format(getString(R.string.gbp_trans_amount), trans.calcGBP(currencyConverter));
             ((TextView) result.findViewById(android.R.id.text1)).setText(actualAmt);
             ((TextView) result.findViewById(android.R.id.text2)).setText(poundAmt);
 
