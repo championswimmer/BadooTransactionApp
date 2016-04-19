@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BadooTransactionApp</string>
+    <string name="products">Products</string>
+    <string name="title_activity_transaction_list">TransactionListActivity</string>
 </resources>
