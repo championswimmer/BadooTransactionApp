@@ -2,4 +2,6 @@
     <string name="app_name">BadooTransactionApp</string>
     <string name="products">Products</string>
     <string name="title_activity_transaction_list">TransactionListActivity</string>
+    <string name="num_transactions">%d transactions</string>
+    <string name="trans_detail_title">Transactions for %s</string>
 </resources>

@@ -1,10 +1,11 @@
 package in.arnavgupta.badootransactionapp.models;
 
+import java.util.List;
+
 /**
  * Created by championswimmer on 19/4/16.
  */
-public class Transaction {
+public class SkuTransactions {
     public String SKU;
-    public float amount;
-    public String currency;
+    public List<Transaction> transactions;
 }
