@@ -25,6 +25,8 @@ public class DataUtils {
 
     private static CurrencyConverter currencyConverter = null;
 
+    private static Map<String, Double> curRateMap = new HashMap<>();
+
     public static String loadJSONFromAsset(Context c, String fileName) {
         String json = null;
         try {
@@ -71,6 +73,18 @@ public class DataUtils {
         return transactionMap;
     }
 
+    public static double convertToGBP(String currency, double amount, Context c) {
+        double reqRate;
+        if (curRateMap.containsKey(currency)) {
+            reqRate = curRateMap.get(currency);
+        } else {
+            Log.d(TAG, "convertToGBP: Start Vertex = " + currency);
+            reqRate = getCurrencyConverter(c).convertCurrency(currency, "GBP", 1);
+            curRateMap.put(currency, reqRate);
+        }
+        return reqRate * amount;
+    }
+
     public static CurrencyConverter getCurrencyConverter (Context c) {
 
         if (currencyConverter == null) {
@@ -100,12 +114,19 @@ public class DataUtils {
                     break;
                 }
 
+                if (to.equals("GBP")) {
+                    curRateMap.put(from, rate);
+                }
+                if (from.equals("GBP")) {
+                    curRateMap.put(to, (1/rate));
+                }
+
                 boolean success = currencyConverter.setExchangeRate(
                         from,
                         to,
                         rate
                 );
-                //Log.d(TAG, "getCurrencyConverter: Added rate from " + from + " to " + to + " and reverse = " + success);
+                Log.d(TAG, "getCurrencyConverter: Added rate from " + from + " to " + to + " and reverse = " + success);
             }
         }
 

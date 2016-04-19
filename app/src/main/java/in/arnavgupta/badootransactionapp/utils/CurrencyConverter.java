@@ -41,17 +41,27 @@ public class CurrencyConverter {
 
     public static final String TAG = "CurCov";
 
+    class CurRate {
+        public CurRate(Double rate, String edgeName) {
+            this.rate = rate;
+            EdgeName = edgeName;
+        }
+
+        public Double rate;
+        public String EdgeName;
+    }
+
     /*
      * directed, because the exchange rate is direction specific
      * unweighted, because the exchange rates are the edges themselves
      */
-    private SimpleDirectedGraph<String,Double> currencyGraph;
+    private SimpleDirectedGraph<String,CurRate> currencyGraph;
 
     /**
      * Simple constructor. Initializes nothing.
      */
     public CurrencyConverter() {
-        currencyGraph = new SimpleDirectedGraph<String, Double>(Double.class);
+        currencyGraph = new SimpleDirectedGraph<String, CurRate>(CurRate.class);
     }
 
     /**
@@ -81,10 +91,10 @@ public class CurrencyConverter {
 //            currencyGraph.removeEdge(goal, origin);
 //        }
         // add the edge
-        boolean	addDirectCurrency = currencyGraph.addEdge(origin, goal, rate);
+        boolean	addDirectCurrency = currencyGraph.addEdge(origin, goal, new CurRate(rate, origin+goal));
 //        Log.d(TAG, "setExchangeRate: Added path + " + origin + " > " + goal + " success:" + addDirectCurrency);
         // and the direct inverse edge, with the inverse weight
-        boolean	addReverseCurrency = currencyGraph.addEdge(goal, origin, 1.0 / rate);
+        boolean	addReverseCurrency = currencyGraph.addEdge(goal, origin, new CurRate((1.0/rate), goal+origin));
 //        Log.d(TAG, "setExchangeRate: Added path + " + goal + " > " + origin + " success:" + addReverseCurrency);
 
         //Log.d(TAG, "setExchangeRate: Rate = " + rate + "  " + (1.0/rate));
@@ -107,7 +117,7 @@ public class CurrencyConverter {
     {
         // find the shortest path between the two currencies
 
-        List<Double> l = DijkstraShortestPath.findPathBetween(currencyGraph, origin, goal);
+        List<CurRate> l = DijkstraShortestPath.findPathBetween(currencyGraph, origin, goal);
 
         // when there is no path between the 2 nodes / vertices / currencies
         // DijkstraShortestPath returns null
@@ -116,8 +126,8 @@ public class CurrencyConverter {
 
         // navigate the edges and iteratively compute the exchange rate
         double rate = 1.0;
-        for (Double edge : l) {
-            rate = rate * edge.doubleValue();
+        for (CurRate edge : l) {
+            rate = rate * edge.rate.doubleValue();
         }
 
         // compute and return the currency value
