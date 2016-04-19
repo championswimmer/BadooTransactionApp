@@ -1,10 +1,8 @@
 package in.arnavgupta.badootransactionapp;
 
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +11,11 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import in.arnavgupta.badootransactionapp.models.SkuTransactions;
 import in.arnavgupta.badootransactionapp.utils.DataLoaders;
-import in.arnavgupta.badootransactionapp.utils.DataUtils;
 
 
 public class ProductListActivity extends AppCompatActivity {
@@ -29,12 +23,10 @@ public class ProductListActivity extends AppCompatActivity {
     public static final String TAG = "ProdListAct";
 
     public static final String EXTRA_SKU_TRANSACTIONS = "sku_transactions";
-
-    ListView productList;
-
     //A Map with each object containing a list of all transactions of a particular SKU
     //Ideally this should go into a database, and then we can query WHERE SKU = "xyz"
     static Map<String, SkuTransactions> transactionsMap;
+    ListView productList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +46,11 @@ public class ProductListActivity extends AppCompatActivity {
         });
 
 
-
         productList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getBaseContext(), TransactionListActivity.class);
-                String sku = (String) ((TextView)view.findViewById(R.id.text_product_sku)).getText();
+                String sku = (String) ((TextView) view.findViewById(R.id.text_product_sku)).getText();
                 i.putExtra(EXTRA_SKU_TRANSACTIONS, sku);
                 startActivity(i);
             }
@@ -91,9 +82,6 @@ public class ProductListActivity extends AppCompatActivity {
             // TODO implement you own logic with ID
             return 0;
         }
-
-
-
 
 
         @Override

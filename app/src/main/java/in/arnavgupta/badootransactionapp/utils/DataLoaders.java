@@ -8,8 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Currency;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,24 +23,7 @@ public class DataLoaders {
 
     public static final String TAG = "DataLoaders";
 
-    /**
-     * Turning the transactions loader into a background function,
-     * implementing a callback which notifies when all transactions
-     * are loaded from the JSON
-     */
-    public interface OnTransactionsLoadedListener {
-        public void onTransactionsLoaded (Map<String, SkuTransactions> skuTransactionsMap);
-    }
-
-    /**
-     * Turning rates loader into a background function, and implementing
-     * a callback to notify when all rates are loaded.
-     */
-    public interface OnRatesLoadedListener {
-        public void onRatesLoaded(List<Rate> rateList);
-    }
-
-    public static void loadTransactions (Context c, OnTransactionsLoadedListener onTrLoadListener) {
+    public static void loadTransactions(Context c, OnTransactionsLoadedListener onTrLoadListener) {
         Map<String, SkuTransactions> transactionMap = new TreeMap<>();
         String transactionJson = DataUtils.loadJSONFromAsset(c, "transactions.json");
 
@@ -100,5 +81,22 @@ public class DataLoaders {
         } catch (JSONException je) {
             Log.e(TAG, "loadCurrencies: Could not load rates JSON", je);
         }
+    }
+
+    /**
+     * Turning the transactions loader into a background function,
+     * implementing a callback which notifies when all transactions
+     * are loaded from the JSON
+     */
+    public interface OnTransactionsLoadedListener {
+        public void onTransactionsLoaded(Map<String, SkuTransactions> skuTransactionsMap);
+    }
+
+    /**
+     * Turning rates loader into a background function, and implementing
+     * a callback to notify when all rates are loaded.
+     */
+    public interface OnRatesLoadedListener {
+        public void onRatesLoaded(List<Rate> rateList);
     }
 }

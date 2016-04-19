@@ -1,9 +1,5 @@
 package in.arnavgupta.badootransactionapp.models;
 
-import android.content.Context;
-
-import java.util.Objects;
-
 import in.arnavgupta.badootransactionapp.utils.CurrencyConverter;
 import in.arnavgupta.badootransactionapp.utils.DataUtils;
 
@@ -22,7 +18,7 @@ public class Transaction {
      *
      * @return
      */
-    public double calcGBP (CurrencyConverter currConv) {
+    public double calcGBP(CurrencyConverter currConv) {
 
         if (currency.equals("GBP")) {
             amountGBP = amount;
