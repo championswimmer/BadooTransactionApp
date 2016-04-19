@@ -44,7 +44,11 @@ public class CurrencyConverter {
     /**
      * In a change from Miguel's example code, I am using a wrapper class for edges,
      * because each edge must by unique.
-     * Using a raw Double means, all rates must be unique, which may not be so.
+     * A graph expects the 'names' of it's edges to be unique. If we use a raw Double,
+     * then the value of the double is it's 'name', in which case, if two sets of
+     * currencies have same ratio, then the Graph won't accept that edge, as the name
+     * will not be unique. So I am wrapping it into a edge {String name, Double rate}
+     * form.
      */
     class CurRate {
         public CurRate(Double rate, String edgeName) {

@@ -24,10 +24,19 @@ public class DataLoaders {
 
     public static final String TAG = "DataLoaders";
 
+    /**
+     * Turning the transactions loader into a background function,
+     * implementing a callback which notifies when all transactions
+     * are loaded from the JSON
+     */
     public interface OnTransactionsLoadedListener {
         public void onTransactionsLoaded (Map<String, SkuTransactions> skuTransactionsMap);
     }
 
+    /**
+     * Turning rates loader into a background function, and implementing
+     * a callback to notify when all rates are loaded.
+     */
     public interface OnRatesLoadedListener {
         public void onRatesLoaded(List<Rate> rateList);
     }

@@ -46,7 +46,7 @@ public class TransactionListActivity extends AppCompatActivity {
         DataLoaders.loadCurrencies(this, new DataLoaders.OnRatesLoadedListener() {
             @Override
             public void onRatesLoaded(List<Rate> rateList) {
-                currencyConverter = DataUtils.getCurrencyConverter(getApplicationContext(), rateList);
+                currencyConverter = DataUtils.getCurrencyConverter(rateList);
 
                 /*
                 Save the data, so next time opening this page again we do not

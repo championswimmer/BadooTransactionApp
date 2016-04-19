@@ -26,7 +26,10 @@ public class DataUtils {
     public static final String TAG = "DatUtils";
 
     /**
-     * A private static CurrencyConverter singleton
+     * A private static CurrencyConverter instance, which
+     * is used similar to a singleton. We will always use this
+     * instance across the whole app, and acquire it via
+     * DataUtils.getCurrencyConverter()
      */
     private static CurrencyConverter currencyConverter = null;
 
@@ -96,7 +99,7 @@ public class DataUtils {
      * @param c Context
      * @return Singleton instance of CurrencyConverter
      */
-    public static CurrencyConverter getCurrencyConverter (Context c, List<Rate> currencyRates) {
+    public static CurrencyConverter getCurrencyConverter (List<Rate> currencyRates) {
 
         if (currencyConverter == null) {
             currencyConverter = new CurrencyConverter();

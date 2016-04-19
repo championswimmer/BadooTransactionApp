@@ -20,7 +20,6 @@ public class Transaction {
      * A singleton-wrap over amountGBP, so that the calculation
      * need not take again if already calculated.
      *
-     * @param c
      * @return
      */
     public double calcGBP (CurrencyConverter currConv) {
