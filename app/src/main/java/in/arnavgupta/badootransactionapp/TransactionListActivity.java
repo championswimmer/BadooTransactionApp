@@ -38,7 +38,7 @@ public class TransactionListActivity extends AppCompatActivity {
         transListView = (ListView) findViewById(R.id.transactions_list);
         skuName = getIntent().getStringExtra(ProductListActivity.EXTRA_SKU_TRANSACTIONS);
 
-        SkuTransactions skuTrans = ProductListActivity.transactionsMap.get(skuName);
+        final SkuTransactions skuTrans = ProductListActivity.transactionsMap.get(skuName);
         final List<Transaction> transList = skuTrans.transactions;
         final TransactionListAdapter trListAdapter = new TransactionListAdapter(transList);
 
@@ -48,9 +48,19 @@ public class TransactionListActivity extends AppCompatActivity {
             public void onRatesLoaded(List<Rate> rateList) {
                 currencyConverter = DataUtils.getCurrencyConverter(getApplicationContext(), rateList);
 
-                for (Transaction trans : transList) {
-                    totalGBP += trans.calcGBP(currencyConverter);
+                /*
+                Save the data, so next time opening this page again we do not
+                have to go through the loop and calculate the total again
+                 */
+                if (skuTrans.totalInGBP == 0) {
+                    for (Transaction trans : transList) {
+                        totalGBP += trans.calcGBP(currencyConverter);
+                    }
+                    skuTrans.totalInGBP = totalGBP;
+                } else {
+                    totalGBP = skuTrans.totalInGBP;
                 }
+
                 textGbpTotal = (TextView) findViewById(R.id.text_total_gbp);
 
                 if (textGbpTotal != null) {

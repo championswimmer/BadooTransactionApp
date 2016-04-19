@@ -75,7 +75,6 @@ public class DataUtils {
      *
      * @param currency
      * @param amount
-     * @param c
      * @return
      */
     public static double convertToGBP(String currency, double amount,CurrencyConverter currConv) {

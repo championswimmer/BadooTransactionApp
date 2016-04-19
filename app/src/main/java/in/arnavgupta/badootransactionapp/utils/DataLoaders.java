@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import in.arnavgupta.badootransactionapp.models.Transaction;
  */
 public class DataLoaders {
 
-    public static final String TAG= "DataLoaders";
+    public static final String TAG = "DataLoaders";
 
     public interface OnTransactionsLoadedListener {
         public void onTransactionsLoaded (Map<String, SkuTransactions> skuTransactionsMap);
