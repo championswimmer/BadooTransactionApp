@@ -23,6 +23,8 @@ public class DataUtils {
 
     public static final String TAG = "DatUtils";
 
+    private static CurrencyConverter currencyConverter = null;
+
     public static String loadJSONFromAsset(Context c, String fileName) {
         String json = null;
         try {
@@ -67,5 +69,37 @@ public class DataUtils {
 
         }
         return transactionMap;
+    }
+
+    public static CurrencyConverter getCurrencyConverter (Context c) throws JSONException {
+
+        if (currencyConverter == null) {
+            currencyConverter = new CurrencyConverter();
+
+            String rateJsonString = loadJSONFromAsset(c, "rates.json");
+            JSONArray rateArr = new JSONArray(rateJsonString);
+
+            for (int i = 0; i < rateArr.length(); i++) {
+                JSONObject rateObj = rateArr.getJSONObject(i);
+                String from = rateObj.getString("from");
+                String to = rateObj.getString("from");
+                float rate = (float) rateObj.getDouble("rate");
+
+                currencyConverter.setExchangeRate(
+                        from,
+                        to,
+                        rate
+                );
+                currencyConverter.setExchangeRate(
+                        to,
+                        from,
+                        (1/rate)
+                );
+
+            }
+
+        }
+
+        return currencyConverter;
     }
 }

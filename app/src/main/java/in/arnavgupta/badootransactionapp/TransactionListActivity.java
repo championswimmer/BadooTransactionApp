@@ -36,10 +36,10 @@ public class TransactionListActivity extends AppCompatActivity {
 
         transListView.setAdapter(trListAdapter);
 
-
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(String.format(getString(R.string.trans_detail_title), skuName));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(String.format(getString(R.string.trans_detail_title), skuName));
+        }
     }
 
     class TransactionListAdapter extends BaseAdapter {
@@ -82,13 +82,13 @@ public class TransactionListActivity extends AppCompatActivity {
             Transaction trans = getItem(position);
 
             // TODO replace findViewById by ViewHolder pattern
-            Log.d(TAG, "getView: " + trans.amount);
+            //Log.d(TAG, "getView: " + trans.amount);
 
             //FIXME: The values could be null
-            String actualAmt = trans.currency + trans.amount;
-            String poundAmt = "GBP" + trans.amount; //TODO: Use currency symbols?
+            String actualAmt = trans.currency + " " +  trans.amount;
+            String poundAmt = "GBP" + " " +  trans.amount; //TODO: Use currency symbols?
             ((TextView) result.findViewById(android.R.id.text1)).setText(actualAmt);
-            ((TextView) result.findViewById(android.R.id.text2)).setText(String.valueOf(trans.amount));
+            ((TextView) result.findViewById(android.R.id.text2)).setText(poundAmt);
 
 
             return result;
