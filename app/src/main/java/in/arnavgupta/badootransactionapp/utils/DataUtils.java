@@ -62,35 +62,7 @@ public class DataUtils {
         return json;
     }
 
-    public static Map<String, SkuTransactions> loadTransactions (Context c) throws JSONException {
-        Map<String, SkuTransactions> transactionMap = new HashMap<>();
-        String transactionJson = loadJSONFromAsset(c, "transactions.json");
-        JSONArray transArray = new JSONArray(transactionJson);
-        Transaction tmpTrans;
-        SkuTransactions transList;
-        for (int i = 0; i < transArray.length(); i++) {
-            JSONObject transObj = transArray.getJSONObject(i);
-            tmpTrans = new Transaction();
-            tmpTrans.amount = (double) transObj.getDouble("amount");
-            tmpTrans.currency = transObj.getString("currency");
-            tmpTrans.SKU = transObj.getString("sku");
 
-            if (transactionMap.containsKey(tmpTrans.SKU)) {
-                //Log.d(TAG, "loadTransactions: "+ tmpTrans.SKU + " exists");
-                transList = transactionMap.get(tmpTrans.SKU);
-                transList.transactions.add(tmpTrans);
-                transactionMap.put(tmpTrans.SKU, transList);
-            } else {
-                transList = new SkuTransactions();
-                transList.transactions = new ArrayList<>();
-                transList.SKU = tmpTrans.SKU;
-                transList.transactions.add(tmpTrans);
-                transactionMap.put(tmpTrans.SKU, transList);
-            }
-
-        }
-        return transactionMap;
-    }
 
     /**
      * Whenever we need to convert a currency, we call this method.

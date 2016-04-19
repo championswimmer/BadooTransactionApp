@@ -38,7 +38,7 @@ public class TransactionListActivity extends AppCompatActivity {
 
         transListView = (ListView) findViewById(R.id.transactions_list);
 
-        skuName = getIntent().getStringExtra("SKU");
+        skuName = getIntent().getStringExtra(ProductListActivity.EXTRA_SKU_TRANSACTIONS);
 
         SkuTransactions skuTrans = ProductListActivity.transactionsMap.get(skuName);
         List<Transaction> transList = skuTrans.transactions;

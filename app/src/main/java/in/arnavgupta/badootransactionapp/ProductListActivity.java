@@ -1,6 +1,7 @@
 package in.arnavgupta.badootransactionapp;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,13 +17,18 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import in.arnavgupta.badootransactionapp.models.SkuTransactions;
+import in.arnavgupta.badootransactionapp.utils.DataLoaders;
 import in.arnavgupta.badootransactionapp.utils.DataUtils;
+
 
 public class ProductListActivity extends AppCompatActivity {
 
     public static final String TAG = "ProdListAct";
+
+    public static final String EXTRA_SKU_TRANSACTIONS = "sku_transactions";
 
     ListView productList;
 
@@ -37,21 +43,24 @@ public class ProductListActivity extends AppCompatActivity {
 
         productList = (ListView) findViewById(R.id.product_list);
 
-        try {
-            transactionsMap = DataUtils.loadTransactions(this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        DataLoaders.loadTransactions(this, new DataLoaders.OnTransactionsLoadedListener() {
+            @Override
+            public void onTransactionsLoaded(Map<String, SkuTransactions> skuTransactionsMap) {
+                transactionsMap = skuTransactionsMap;
+                ProductListAdapter productListAdapter = new ProductListAdapter(transactionsMap);
 
-        ProductListAdapter productListAdapter = new ProductListAdapter(transactionsMap);
+                productList.setAdapter(productListAdapter);
+            }
+        });
 
-        productList.setAdapter(productListAdapter);
+
 
         productList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getBaseContext(), TransactionListActivity.class);
-                i.putExtra("SKU", ((TextView)view.findViewById(R.id.text_product_sku)).getText());
+                String sku = (String) ((TextView)view.findViewById(R.id.text_product_sku)).getText();
+                i.putExtra(EXTRA_SKU_TRANSACTIONS, sku);
                 startActivity(i);
             }
         });
