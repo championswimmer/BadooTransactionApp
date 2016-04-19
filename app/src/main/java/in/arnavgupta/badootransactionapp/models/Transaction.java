@@ -16,6 +16,13 @@ public class Transaction {
     public String currency;
     public double amountGBP = -1;
 
+    /**
+     * A singleton-wrap over amountGBP, so that the calculation
+     * need not take again if already calculated.
+     *
+     * @param c
+     * @return
+     */
     public double calcGBP (Context c) {
 
         if (currency.equals("GBP")) {

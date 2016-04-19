@@ -25,6 +25,9 @@ public class ProductListActivity extends AppCompatActivity {
     public static final String TAG = "ProdListAct";
 
     ListView productList;
+
+    //A Map with each object containing a list of all transactions of a particular SKU
+    //Ideally this should go into a database, and then we can query WHERE SKU = "xyz"
     static Map<String, SkuTransactions> transactionsMap;
 
     @Override

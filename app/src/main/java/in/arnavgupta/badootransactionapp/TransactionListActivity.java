@@ -99,7 +99,6 @@ public class TransactionListActivity extends AppCompatActivity {
             Transaction trans = getItem(position);
 
             // TODO replace findViewById by ViewHolder pattern
-            //Log.d(TAG, "getView: " + trans.amount);
 
             //FIXME: The values could be null
             String actualAmt = trans.currency + " " + trans.amount;

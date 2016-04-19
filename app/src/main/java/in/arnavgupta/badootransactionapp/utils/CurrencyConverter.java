@@ -41,6 +41,11 @@ public class CurrencyConverter {
 
     public static final String TAG = "CurCov";
 
+    /**
+     * In a change from Miguel's example code, I am using a wrapper class for edges,
+     * because each edge must by unique.
+     * Using a raw Double means, all rates must be unique, which may not be so.
+     */
     class CurRate {
         public CurRate(Double rate, String edgeName) {
             this.rate = rate;
@@ -79,25 +84,18 @@ public class CurrencyConverter {
         boolean originAdded = currencyGraph.addVertex(origin);
         boolean goalAdded = currencyGraph.addVertex(goal);
 
-//        Log.d(TAG, "setExchangeRate: Origin " + origin + " added" + originAdded);
-//        Log.d(TAG, "setExchangeRate: Goal " + goal + " added" + goalAdded);
-
 
         // check whether the edge already exists
         // if so, remove it, in order to add it
-//        if (currencyGraph.containsEdge(origin, goal)) {
-//            //Log.d(TAG, "setExchangeRate: Edge exists " + origin + " > " + goal);
-//            currencyGraph.removeEdge(origin, goal);
-//            currencyGraph.removeEdge(goal, origin);
-//        }
+        if (currencyGraph.containsEdge(origin, goal)) {
+            currencyGraph.removeEdge(origin, goal);
+            currencyGraph.removeEdge(goal, origin);
+        }
         // add the edge
         boolean	addDirectCurrency = currencyGraph.addEdge(origin, goal, new CurRate(rate, origin+goal));
-//        Log.d(TAG, "setExchangeRate: Added path + " + origin + " > " + goal + " success:" + addDirectCurrency);
         // and the direct inverse edge, with the inverse weight
         boolean	addReverseCurrency = currencyGraph.addEdge(goal, origin, new CurRate((1.0/rate), goal+origin));
-//        Log.d(TAG, "setExchangeRate: Added path + " + goal + " > " + origin + " success:" + addReverseCurrency);
 
-        //Log.d(TAG, "setExchangeRate: Rate = " + rate + "  " + (1.0/rate));
 
 
         return addDirectCurrency && addReverseCurrency;
@@ -127,7 +125,7 @@ public class CurrencyConverter {
         // navigate the edges and iteratively compute the exchange rate
         double rate = 1.0;
         for (CurRate edge : l) {
-            rate = rate * edge.rate.doubleValue();
+            rate = rate * edge.rate;
         }
 
         // compute and return the currency value
