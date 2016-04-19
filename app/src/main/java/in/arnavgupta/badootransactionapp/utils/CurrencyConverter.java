@@ -3,8 +3,12 @@ package in.arnavgupta.badootransactionapp.utils;
 /**
  * Created by championswimmer on 19/4/16.
  */
+import android.util.Log;
+
 import java.util.List;
 
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.alg.BellmanFordShortestPath;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.*;
 
@@ -35,6 +39,8 @@ import org.jgrapht.graph.*;
 
 public class CurrencyConverter {
 
+    public static final String TAG = "CurCov";
+
     /*
      * directed, because the exchange rate is direction specific
      * unweighted, because the exchange rates are the edges themselves
@@ -60,19 +66,29 @@ public class CurrencyConverter {
     public boolean setExchangeRate(String origin, String goal, double rate)
     {
         // add the vertices (currencies) if they do not exist
-        currencyGraph.addVertex(origin);
-        currencyGraph.addVertex(goal);
+        boolean originAdded = currencyGraph.addVertex(origin);
+        boolean goalAdded = currencyGraph.addVertex(goal);
+
+//        Log.d(TAG, "setExchangeRate: Origin " + origin + " added" + originAdded);
+//        Log.d(TAG, "setExchangeRate: Goal " + goal + " added" + goalAdded);
+
 
         // check whether the edge already exists
         // if so, remove it, in order to add it
-        if (currencyGraph.containsEdge(origin, goal)) {
-            currencyGraph.removeEdge(origin, goal);
-            currencyGraph.removeEdge(goal, origin);
-        }
+//        if (currencyGraph.containsEdge(origin, goal)) {
+//            //Log.d(TAG, "setExchangeRate: Edge exists " + origin + " > " + goal);
+//            currencyGraph.removeEdge(origin, goal);
+//            currencyGraph.removeEdge(goal, origin);
+//        }
         // add the edge
         boolean	addDirectCurrency = currencyGraph.addEdge(origin, goal, rate);
+//        Log.d(TAG, "setExchangeRate: Added path + " + origin + " > " + goal + " success:" + addDirectCurrency);
         // and the direct inverse edge, with the inverse weight
         boolean	addReverseCurrency = currencyGraph.addEdge(goal, origin, 1.0 / rate);
+//        Log.d(TAG, "setExchangeRate: Added path + " + goal + " > " + origin + " success:" + addReverseCurrency);
+
+        //Log.d(TAG, "setExchangeRate: Rate = " + rate + "  " + (1.0/rate));
+
 
         return addDirectCurrency && addReverseCurrency;
     }
@@ -90,12 +106,13 @@ public class CurrencyConverter {
     public double convertCurrency( String origin, String goal, double amount ) throws ArithmeticException
     {
         // find the shortest path between the two currencies
+
         List<Double> l = DijkstraShortestPath.findPathBetween(currencyGraph, origin, goal);
 
         // when there is no path between the 2 nodes / vertices / currencies
         // DijkstraShortestPath returns null
         if ( l == null)
-            throw new ArithmeticException("This exchange does not exist");
+            throw new ArithmeticException("This exchange does not exist" + origin + " to " + goal);
 
         // navigate the edges and iteratively compute the exchange rate
         double rate = 1.0;

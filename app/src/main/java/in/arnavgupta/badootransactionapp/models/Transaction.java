@@ -1,5 +1,7 @@
 package in.arnavgupta.badootransactionapp.models;
 
+import java.util.Objects;
+
 import in.arnavgupta.badootransactionapp.utils.CurrencyConverter;
 
 /**
@@ -12,8 +14,18 @@ public class Transaction {
     public double amountGBP = -1;
 
     public double calcGBP (CurrencyConverter curCov) {
+
+        if (currency.equals("GBP")) {
+            amountGBP = amount;
+            return amountGBP;
+        }
+
         if (amountGBP == -1) {
-            amountGBP = curCov.convertCurrency(currency, "GBP", amount);
+            try {
+                amountGBP = curCov.convertCurrency(currency, "GBP", amount);
+            } catch (ArithmeticException e) {
+                amountGBP = 0;
+            }
         }
         return amountGBP;
     }

@@ -100,17 +100,12 @@ public class DataUtils {
                     break;
                 }
 
-
-                currencyConverter.setExchangeRate(
+                boolean success = currencyConverter.setExchangeRate(
                         from,
                         to,
                         rate
                 );
-                currencyConverter.setExchangeRate(
-                        to,
-                        from,
-                        (1/rate)
-                );
+                //Log.d(TAG, "getCurrencyConverter: Added rate from " + from + " to " + to + " and reverse = " + success);
             }
         }
 
