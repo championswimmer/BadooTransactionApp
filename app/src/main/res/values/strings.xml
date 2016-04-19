@@ -4,5 +4,6 @@
     <string name="title_activity_transaction_list">TransactionListActivity</string>
     <string name="num_transactions">%d transactions</string>
     <string name="trans_detail_title">Transactions for %s</string>
-    <string name="total_gbp">Total: GBP %s</string>
+    <string name="total_gbp">Total: GBP %.2f</string>
+    <string name="gbp_trans_amount">GBP %.2f</string>
 </resources>

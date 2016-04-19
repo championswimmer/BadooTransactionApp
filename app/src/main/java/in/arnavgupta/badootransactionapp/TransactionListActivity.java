@@ -104,7 +104,7 @@ public class TransactionListActivity extends AppCompatActivity {
             //FIXME: The values could be null
             String actualAmt = trans.currency + " " + trans.amount;
 
-            String poundAmt = "GBP" + " " + trans.calcGBP(currencyConverter); //TODO: Use currency symbols?
+            String poundAmt = String.format(getString(R.string.gbp_trans_amount), trans.calcGBP(currencyConverter));
             ((TextView) result.findViewById(android.R.id.text1)).setText(actualAmt);
             ((TextView) result.findViewById(android.R.id.text2)).setText(poundAmt);
 
